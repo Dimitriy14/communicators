@@ -1,0 +1,21 @@
+version: "3"
+services:
+  server:
+    container_name: server
+    image: server
+    build: ./server
+    expose:
+      - 50051
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./communicatorpb:/go/src/github.com/Dimitriy14/communicators/grpc/communicatorpb
+
+  client:
+    container_name: client
+    image: client
+    build: ./client
+    depends_on:
+      - server
+    volumes:
+      - ./communicatorpb:/go/src/github.com/Dimitriy14/communicators/grpc/communicatorpb

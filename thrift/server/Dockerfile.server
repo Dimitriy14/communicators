@@ -1,0 +1,18 @@
+FROM golang:1.12-alpine3.9 AS builder
+RUN apk add --no-cache git
+
+WORKDIR src/github.com/Dimitriy14/communicators/thrift
+
+ENV  GO111MODULE=on
+
+COPY server server
+COPY gen-go gen-go
+WORKDIR server
+
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /go/bin/communicators/thrift/server .
+
+
+FROM alpine:3.7
+WORKDIR /root/
+COPY --from=builder /go/bin/communicators/thrift/server .
+CMD ["./server"]
